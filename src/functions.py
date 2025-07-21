@@ -17,7 +17,7 @@ def getPosts(id: str, exclude_reblogs:bool=False, exclude_replies:bool=False):
         (nothing)
 
     """
-
+    
     url = f'https://mastodon.social/api/v1/accounts/{id}/statuses?exclude_reblogs={exclude_reblogs}&exclude_replies={exclude_replies}'
     data = requests.get(url).json()
 
