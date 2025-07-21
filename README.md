@@ -1,0 +1,1 @@
+thanks to @acarters for the regex cleanup stuff
