@@ -1,10 +1,5 @@
 import requests, re
 
-webhookUrl = ''
-
-
-
-
 def getPosts(id: str, exclude_reblogs:bool=False, exclude_replies:bool=False):
     """Gets posts made by a given user
 
@@ -30,7 +25,7 @@ def getPosts(id: str, exclude_reblogs:bool=False, exclude_replies:bool=False):
 #     return data
 
 
-def sendMessage(msg:str, username:str='', avatar_url:str='', images:list=[], videos:list=[]):
+def sendMessage(msg:str, webhookUrl:str, username:str='', avatar_url:str='', images:list=[], videos:list=[]):
     """Sends a message to the discord webhook
 
     Args:
@@ -64,6 +59,14 @@ def sendMessage(msg:str, username:str='', avatar_url:str='', images:list=[], vid
             }
         })
 
+    # add videos to webhook data as embeds
+    for vid in videos:
+        data['embeds'].append({
+            'video': {
+                'url': img
+            }
+        })
+
     print(data)
 
     result = requests.post(webhookUrl, json=data)
@@ -86,8 +89,8 @@ def cleanMessage(msg:str) -> str:
 
     """
 
-    # thanks to acarters on GitHub for this
-    regexReplacements = [('</p><p>', '\n\n'), ('<br>', '\n'), ('\\"', '"'), ('&amp', '&'), ('&gt', '>'), ('<(:?[^>]+)>', ''), ('@x.com', ''), ('&nbsp', '')]
+    # thanks to acarters on GitHub for most of this
+    regexReplacements = [('</p><p>', '\n\n'), ('<br>', '\n'), ('\\"', '"'), ('&amp', '&'), ('&gt', '>'), ('<(:?[^>]+)>', ''), ('@x.com', ''), ('&nbsp', ''), ('@twitter.com', ''), ('@sportsbots.xyz', '')]
 
     cleaned = msg
 
@@ -96,7 +99,7 @@ def cleanMessage(msg:str) -> str:
 
     return cleaned
 
-def sendInsiderPost(post: dict):
+def sendInsiderPost(post: dict, webhookUrl: str):
     """Sends a formatted mastodon post (json) to the discord webhook
 
     Args:
@@ -117,4 +120,4 @@ def sendInsiderPost(post: dict):
             videos.append(attachment['url'])
 
     # sendMessage('**' + post['account']['display_name'] + '**:\n' + cleanMessage(post['content']), images=images, videos=videos)
-    sendMessage(cleanMessage(post['content']), username=post['account']['display_name'], avatar_url=post['account']['avatar'], images=images, videos=videos)
+    sendMessage(cleanMessage(post['content']), webhookUrl, username=post['account']['display_name'], avatar_url=post['account']['avatar'], images=images, videos=videos)

@@ -204,3 +204,5 @@ __marimo__/
 
 #.DS_Store (mac)
 .DS_Store
+
+conf.yaml

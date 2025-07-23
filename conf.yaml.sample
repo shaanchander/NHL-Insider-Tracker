@@ -1,0 +1,10 @@
+discordWebhookUrl: "https://discord.com/api/webhooks/..."
+
+# Add/remove insiders here - some provided here by default
+insiders: [
+  "109617175461045229", # Eliotte Friedman
+  "109723560254121614", # Pierre Lebrun
+  "109723670700140884", # Darren Dreger
+  "109723646153258627", # Chris Johnston
+  "109747494700715321" # Frank Seravalli
+]

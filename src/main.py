@@ -1,16 +1,20 @@
-import requests
+import yaml
 from functions import *
 
-# insiders' bot ids on mastodon (thanks sportsbots.xyz) - add new ones as desired
-insiders = {'eliotteFriedman': '109617175461045229', 'pierreLebrun': '109723560254121614', 'darrenDreger': '109723670700140884', 'chrisJohnston': '109723646153258627', 'frankSeravalli': '109747494700715321'}
-# insiders = {'chrisJohnston': '109723646153258627'}
+confData= {}
 
-for insider,id in insiders.items():
+with open('../conf.yaml', 'r') as file:
+    confData = yaml.safe_load(file)
 
-    posts = getPosts(id, exclude_reblogs=True, exclude_replies=True)
+if 'insiders' not in confData or 'discordWebhookUrl' not in confData:
+    print("YAML doesn't include 'insiders' field and 'discordWebhookUrl'")
+    exit()
+    
+insiders = confData['insiders']
+discordWebhookUrl = confData['discordWebhookUrl']
 
-    sendInsiderPost(posts[12])
-    # sendMessage('**' + posts[1]['account']['display_name'] + '**:\n' + cleanMessage(posts[1]['content']), images=images, videos=videos)
-    # sendMessage(posts[0]['content'] + '\n' + posts[0]['media_attachments'][0]['url'])
+for insider in insiders:
 
-    # exit()
+    posts = getPosts(insider, exclude_reblogs=True, exclude_replies=True)
+
+    sendInsiderPost(posts[12], discordWebhookUrl)
