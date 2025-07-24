@@ -13,7 +13,7 @@ def getPosts(id: str, exclude_reblogs:bool=False, exclude_replies:bool=False):
 
     """
     
-    url = f'https://mastodon.social/api/v1/accounts/{id}/statuses?exclude_reblogs={exclude_reblogs}&exclude_replies={exclude_replies}'
+    url = f'https://mastodon.social/api/v1/accounts/{id}/statuses?exclude_reblogs={str(exclude_reblogs).lower()}&exclude_replies={str(exclude_replies).lower()}'
     data = requests.get(url).json()
 
     return data
@@ -113,14 +113,29 @@ def sendInsiderPost(post: dict, webhookUrl: str):
 
     """
 
+    username = ''
+    avatarUrl = ''
+
+    workingPost = {}
+
+    # handle boosted (reposted) posts
+    if post['reblog'] != None:
+        workingPost = post['reblog']
+        username = workingPost['account']['display_name'] + f' (via {post['account']['display_name']})'
+        avatarUrl = workingPost['account']['avatar']
+    else:
+        workingPost = post
+        username = post['account']['display_name']
+        avatarUrl = post['account']['avatar']
+
     images = []
     videos = []
 
-    for attachment in post['media_attachments']:
+    for attachment in workingPost['media_attachments']:
         if attachment['type'] == 'image':
             images.append(attachment['url'])
 
         if attachment['type'] == 'video':
             videos.append(attachment['url'])
 
-    sendMessage(cleanMessage(post), webhookUrl, username=post['account']['display_name'], avatar_url=post['account']['avatar'], images=images, videos=videos)
+    sendMessage(cleanMessage(workingPost), webhookUrl, username=username, avatar_url=avatarUrl, images=images, videos=videos)
