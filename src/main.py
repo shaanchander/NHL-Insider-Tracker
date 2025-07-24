@@ -17,4 +17,4 @@ for insider in insiders:
 
     posts = getPosts(insider, exclude_reblogs=True, exclude_replies=True)
 
-    sendInsiderPost(posts[12], discordWebhookUrl)
+    sendInsiderPost(posts[13], discordWebhookUrl)

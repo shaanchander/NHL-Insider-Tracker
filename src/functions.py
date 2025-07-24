@@ -78,7 +78,7 @@ def sendMessage(msg:str, webhookUrl:str, username:str='', avatar_url:str='', ima
     else:
         print(f'Payload delivered successfully (code {result.status_code})')
 
-def cleanMessage(msg:str) -> str:
+def cleanMessage(post:dict) -> str:
     """Cleans and interprets message contents (including html tags)
 
     Args:
@@ -89,13 +89,17 @@ def cleanMessage(msg:str) -> str:
 
     """
 
-    # thanks to acarters on GitHub for most of this
+    # thanks to acarters on GitHub for most of this regex cleaning stuff
     regexReplacements = [('</p><p>', '\n\n'), ('<br>', '\n'), ('\\"', '"'), ('&amp', '&'), ('&gt', '>'), ('<(:?[^>]+)>', ''), ('@x.com', ''), ('&nbsp', ''), ('@twitter.com', ''), ('@sportsbots.xyz', '')]
 
-    cleaned = msg
+    cleaned = post['content']
 
     for reg in regexReplacements:
         cleaned = re.sub(reg[0], reg[1], cleaned)
+
+    # fix url if applicable to be complete
+    if post['card'] and 'url' in post['card']:
+        cleaned = re.sub('\\S*(\\.com|\\.ca|\\.org|\\.net)\\S*(…|\\.\\.\\.)', post['card']['url'], cleaned)
 
     return cleaned
 
@@ -119,5 +123,4 @@ def sendInsiderPost(post: dict, webhookUrl: str):
         if attachment['type'] == 'video':
             videos.append(attachment['url'])
 
-    # sendMessage('**' + post['account']['display_name'] + '**:\n' + cleanMessage(post['content']), images=images, videos=videos)
-    sendMessage(cleanMessage(post['content']), webhookUrl, username=post['account']['display_name'], avatar_url=post['account']['avatar'], images=images, videos=videos)
+    sendMessage(cleanMessage(post), webhookUrl, username=post['account']['display_name'], avatar_url=post['account']['avatar'], images=images, videos=videos)
