@@ -8,3 +8,6 @@ insiders: [
   "109723646153258627", # Chris Johnston
   "109747494700715321" # Frank Seravalli
 ]
+
+# Whether or not to include boosted (reposted) posts in notifications - Default is true
+excludeBoostedPosts: true
