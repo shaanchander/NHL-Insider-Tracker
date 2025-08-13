@@ -1,9 +1,10 @@
 import yaml
 from functions import *
-from datetime import datetime
+from datetime import datetime, timezone
 import os
 
 requiredOptions = [('insiders', 'list'), ('discordWebhookUrl', 'string'), ('excludeBoostedPosts', 'boolean')]
+dateTimeFormat = '%Y-%m-%dT%H:%M:%S.%fZ'
 
 confData= {}
 
@@ -22,13 +23,13 @@ for opt in requiredOptions:
 lastSend = ""
 if os.path.exists('../lastSend.txt'):
     with open('../lastSend.txt', 'r') as file:
-        lastSend = file.readline()
+        lastSend = datetime.strptime(file.readline(), dateTimeFormat)
 else:
-    lastSend = str(datetime.now())
+    lastSend = datetime.now(timezone.utc)
     print('lastSend.txt not found - initializing new one with current time')
 
     with open('../lastSend.txt', 'w') as file:
-        file.write(str(datetime.now()))
+        file.write(datetime.now(timezone.utc).strftime(dateTimeFormat))
 
     exit()
     
@@ -42,16 +43,17 @@ for insider in insiders:
     posts = getPosts(insider, exclude_reblogs=confData['excludeBoostedPosts'], exclude_replies=True)
 
     for post in posts:
-        if post['created_at'] > lastSend:
+        if datetime.strptime(post['created_at'], dateTimeFormat) > lastSend:
+            print(f'{post['created_at']} > {lastSend}')
             postsToSend.append(post)
 
     # sendInsiderPost(posts[0], discordWebhookUrl)
 
-postsToSend = sorted(postsToSend, key = lambda x:datetime.strptime(x['created_at'], '%Y-%m-%dT%H:%M:%S.%fZ'))
+postsToSend = sorted(postsToSend, key = lambda x:datetime.strptime(x['created_at'], dateTimeFormat))
 
 for post in postsToSend:
     # print(post['account']['username'])
     sendInsiderPost(post, discordWebhookUrl)
 
 with open('../lastSend.txt', 'w') as file:
-    file.write(str(datetime.now()))
+    file.write(datetime.now(timezone.utc).strftime(dateTimeFormat))
