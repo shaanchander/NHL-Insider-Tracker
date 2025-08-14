@@ -18,13 +18,6 @@ def getPosts(id: str, exclude_reblogs:bool=False, exclude_replies:bool=False):
 
     return data
 
-# def getProfile(id):
-#     url = f'https://mastodon.social/api/v1/accounts/{id}'
-#     data = requests.get(url).json()
-
-#     return data
-
-
 def sendMessage(msg:str, webhookUrl:str, username:str='', avatar_url:str='', images:list=[], videos:list=[]):
     """Sends a message to the discord webhook
 
