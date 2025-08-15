@@ -114,7 +114,7 @@ def sendInsiderPost(post: dict, webhookUrl: str):
     # handle boosted (reposted) posts
     if post['reblog'] != None:
         workingPost = post['reblog']
-        username = workingPost['account']['display_name'] + f' (via {post['account']['display_name']})'
+        username = f"{workingPost['account']['display_name']} (via {post['account']['display_name']})"
         avatarUrl = workingPost['account']['avatar']
     else:
         workingPost = post

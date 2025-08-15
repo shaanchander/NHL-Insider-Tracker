@@ -47,7 +47,7 @@ def main():
 
         for post in posts:
             if datetime.strptime(post['created_at'], dateTimeFormat) > lastSend:
-                print(f'{post['created_at']} > {lastSend}')
+                print(f"{post['created_at']} > {lastSend}")
                 postsToSend.append(post)
 
     postsToSend = sorted(postsToSend, key = lambda x:datetime.strptime(x['created_at'], dateTimeFormat))
