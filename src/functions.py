@@ -69,7 +69,7 @@ def sendMessage(msg:str, webhookUrl:str, username:str='', avatar_url:str='', ima
     except requests.exceptions.HTTPError as err:
         print(err)
     else:
-        print(f'Payload delivered successfully (code {result.status_code})')
+        print(f'Message sent (code {result.status_code})')
 
 def cleanMessage(post:dict) -> str:
     """Cleans and interprets message contents (including html tags)

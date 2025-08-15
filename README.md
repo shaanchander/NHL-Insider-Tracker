@@ -42,6 +42,7 @@ The project was created to be used for NHL insiders and includes a few prominent
 ## TODO / Current limitations
 - Assumes boosts are never of boosted posts (assumes a regular post is boosted or just a regular post)
 - Make insiders be added by url instead of id for simplicity
+- Error trap conf.yaml properly
 
 ## Thanks to
 - [acarters](https://github.com/acarters) - for the regex cleanup stuff to parse the stylized bodies from Mastodon

@@ -50,12 +50,9 @@ def main():
                 print(f'{post['created_at']} > {lastSend}')
                 postsToSend.append(post)
 
-        # sendInsiderPost(posts[0], discordWebhookUrl)
-
     postsToSend = sorted(postsToSend, key = lambda x:datetime.strptime(x['created_at'], dateTimeFormat))
 
     for post in postsToSend:
-        # print(post['account']['username'])
         sendInsiderPost(post, discordWebhookUrl)
 
     with open(projDir + '/../lastSend.txt', 'w') as file:
